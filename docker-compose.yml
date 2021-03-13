@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+  api:
+      build:
+        context: .
+        dockerfile: Dockerfile
+        args:
+          - NODE_ENV=development
+      depends_on:
+        - db
+      links:
+        - db
+      environment:
+        DB_HOST: db
+      ports:
+        - "3000:3000"
+      volumes:
+        - .:/app
+        - /app/node_modules
+      command: >
+        npm run start:dev
